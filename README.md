@@ -1,1 +1,4 @@
 # JPAMagazinesAnnotations
+JPAMagazinesAnnotations
+
+
