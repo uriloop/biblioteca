@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import controller.CaracteristicasController;
 import controller.CultivoController;
@@ -63,6 +64,9 @@ public class Main {
         return emf;
     }
 
+    /** Ejecuta el programa i sus funciones
+     * @param args
+     */
     public static void main(String[] args) {
         List<Pimiento> pimientos = new ArrayList();
         List<Caracteristicas> caracteristicas = new ArrayList();
@@ -80,53 +84,106 @@ public class Main {
         CaracteristicasController caracteristicasController = new CaracteristicasController(c, entityManagerFactory);
         CultivoController cultivoController = new CultivoController(c, entityManagerFactory);
 
-        Menu menu = new Menu();
         int opcio;
-        opcio = menu.mainMenu();
+        Menu menu;
+        int id;
+        String nombre;
+        while (true) {
+            menu = new Menu();
+            opcio = menu.mainMenu();
+            switch (opcio) {
 
-        switch (opcio) {
+                case 1:
+                    System.out.println("1!!");
+                    try {
+                        pimientos = pimientosController.readPimientosFile("src/main/resources/pimientos.txt");
+                        pimientos.forEach(pimientosController::addPimiento);
 
-            case 1:
-                System.out.println("1!!");
-                try {
-                    pimientos = pimientosController.readPimientosFile("src/main/resources/pimientos.txt");
-                    pimientos.forEach(pimientosController::addPimiento);
+                    } catch (NumberFormatException | IOException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        caracteristicas = caracteristicasController.readCaracFile("src/main/resources/caracteristicas.txt");
+                        caracteristicas.forEach(caracteristicasController::addCaracteristicas);
+                    } catch (NumberFormatException | IOException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        cultivo = cultivoController.readCultivoFile("src/main/resources/cultivo.txt");
+                        cultivo.forEach(cultivoController::addCultivo);
 
-                } catch (NumberFormatException | IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    caracteristicas = caracteristicasController.readCaracFile("src/main/resources/caracteristicas.txt");
-                    caracteristicas.forEach(caracteristicasController::addCaracteristicas);
-                } catch (NumberFormatException | IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    cultivo = cultivoController.readCultivoFile("src/main/resources/cultivo.txt");
-                    cultivo.forEach(cultivoController::addCultivo);
-
-                } catch (NumberFormatException | IOException e) {
-                    e.printStackTrace();
-                }
-                break;
+                    } catch (NumberFormatException | IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
 
 
+                case 2:
+                    System.out.println("2!!");
+
+                    pimientosController.listPimientos();
+                    caracteristicasController.listCaracterisicas();
+                    cultivoController.listCultivo();
+
+                    break;
+                case 3:
+                    System.out.println("dime la id:");
+                    id = new Scanner(System.in).nextInt();
+                    pimientosController.deletePimiento(id);
+                    caracteristicasController.deleteCaracteristicas(id);
+                    cultivoController.deleteCultivo(id);
+
+                    break;
+                case 4:
+                    System.out.println("dime la id:");
+                    id = new Scanner(System.in).nextInt();
+                    pimientosController.printPimiento(id);
+                    caracteristicasController.printCarac(id);
+                    cultivoController.printCult(id);
+
+                    break;
+                case 5:
+
+                    for (Pimiento pimiento :
+                            pimientos) {
+                        pimientosController.deletePimiento(pimiento.getId());
+                        caracteristicasController.deleteCaracteristicas(pimiento.getId());
+                        pimientosController.deletePimiento(pimiento.getId());
+
+                    }
 
 
-            case 2:
-                System.out.println("2!!");
+                    break;
 
-                pimientosController.listPimientos();
-                caracteristicasController.listCaracterisicas();
-                cultivoController.listCultivo();
+                case 6:
+                    System.out.println(" escoje la id a modificar");
+                    id = new Scanner(System.in).nextInt();
+               nombre = new Scanner(System.in).nextLine();
+                    pimientosController.modificaNombre(nombre, id);
 
-                break;
-            default:
-                System.out.println("Adeu!!");
-                System.exit(1);
-                break;
 
+                    break;
+                case 7:
+                    System.out.println(" escribe el texto a buscar (nombre)");
+                    nombre = new Scanner(System.in).nextLine();
+                    List<Pimiento> ids= pimientosController.buscarPorNombre(nombre);
+                    for (Pimiento p :
+                            ids) {
+                        pimientosController.printPimiento(p.getId());
+                        caracteristicasController.printCarac(p.getId());
+                        cultivoController.printCult(p.getId());
+                    }
+                    break;
+
+                default:
+                    System.out.println("Adeu!!");
+                    System.exit(1);
+                    break;
+
+            }
         }
+
+
     }
 }
 

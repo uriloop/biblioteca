@@ -5,11 +5,11 @@
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
 
         <properties>
-            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://192.168.33.10:5432/biblioteca"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://192.168.22.172:5432/biblioteca"/>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
             <property name="javax.persistence.jdbc.user" value="usuario"/>
             <property name="javax.persistence.jdbc.password" value="password"/>
-            <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
         </properties>
     </persistence-unit>
 </persistence>

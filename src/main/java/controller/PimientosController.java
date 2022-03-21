@@ -32,6 +32,13 @@ public class PimientosController {
     public PimientosController() {
         super();
     }
+
+
+    /** Lee el file pimientos.csv i lo convierte a objetos
+     * @param file
+     * @return
+     * @throws IOException
+     */
     public List<Pimiento> readPimientosFile(String file) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(file));
         String linea = "";
@@ -44,7 +51,11 @@ public class PimientosController {
     }
 
 
-
+    /** Devuelve los camposde una linia del csv
+     * @param string
+     * @param regex
+     * @return
+     */
     private static List<String> getCamps(String string, String regex) {
 
         List<String> listTokens = new ArrayList<String>();
@@ -66,6 +77,9 @@ public class PimientosController {
         return listTokens;
     }
 
+    /**Añade un pimiento
+     * @param pimiento
+     */
         /* Method to CREATE pimiento in the database */
     public void addPimiento(Pimiento pimiento) {
         EntityManager em = entityManagerFactory.createEntityManager();
@@ -76,6 +90,10 @@ public class PimientosController {
 
     }
 
+    /**
+     *
+     * Lista los pimienmtos existentes
+     */
     /* Method to READ all Pimientos */
     public void listPimientos() {
         EntityManager em = entityManagerFactory.createEntityManager();
@@ -99,15 +117,65 @@ public class PimientosController {
         em.close();
     }
 
+    /**
+     * @param id Borra la info de un pimiento
+     */
     /* Method to DELETE an Article from the records */
     public void deletePimiento(Integer id) {
         EntityManager em = entityManagerFactory.createEntityManager();
         em.getTransaction().begin();
         Pimiento pimiento = (Pimiento) em.find(Pimiento.class, id);
-        em.remove(pimiento);
+        try{
+
+            em.remove(pimiento);
+        }catch (Exception e){}
         em.getTransaction().commit();
         em.close();
     }
 
 
+    public void printPimiento(int id) {
+        EntityManager em = entityManagerFactory.createEntityManager();
+        em.getTransaction().begin();
+        List<Pimiento> result = em.createQuery("from Pimiento where id="+id, Pimiento.class)
+                .getResultList();
+        for (Pimiento pimiento : result) {
+            System.out.println(pimiento.toString());
+        }
+        em.getTransaction().commit();
+        em.close();
+    }
+
+    public void deleteAll() {
+
+    }
+
+    public void modificaNombre(String nombre,int id) {
+        for (Pimiento p :
+                pimientos) {
+            if (p.getId()==id) p.setNombre(nombre);
+            EntityManager em = entityManagerFactory.createEntityManager();
+            em.getTransaction().begin();
+            //Pimiento pimiento = (Pimiento) em.find(Pimiento.class, id);
+            em.merge(p);
+            em.getTransaction().commit();
+            em.close();
+        }
+
+    }
+
+    public List<Pimiento> buscarPorNombre(String nombre) {
+        List<Pimiento> id= new ArrayList<>();
+        EntityManager em = entityManagerFactory.createEntityManager();
+        em.getTransaction().begin();
+        List<Pimiento> result = em.createQuery("from Pimiento where nombre LIKE '%"+nombre+"%'", Pimiento.class)
+                .getResultList();
+        for (Pimiento pimiento : result) {
+            id.add(pimiento);
+
+        }
+        em.getTransaction().commit();
+        em.close();
+        return id;
+    }
 }

@@ -73,12 +73,18 @@ public class CultivoController implements Serializable {
         em.close();
     }
 
+    /** Borra los datos de cultivo de un pimiento
+     * @param id
+     */
     /* Method to DELETE an Magazine from the records */
     public void deleteCultivo(Integer id) {
         EntityManager em = entityManagerFactory.createEntityManager();
         em.getTransaction().begin();
         Cultivo cultivo = (Cultivo) em.find(Cultivo.class, id);
-        em.remove(cultivo);
+        try{
+            em.remove(cultivo);
+
+        }catch (Exception e){}
         em.getTransaction().commit();
         em.close();
     }
@@ -98,7 +104,11 @@ public class CultivoController implements Serializable {
         }
 
 
-
+    /**Devuelve los campos de cada linia
+     * @param string
+     * @param regex
+     * @return
+     */
         private static List<String> getCamps(String string, String regex) {
 
             List<String> listTokens = new ArrayList<String>();
@@ -119,4 +129,18 @@ public class CultivoController implements Serializable {
 
             return listTokens;
         }
+
+    public void printCult(int id) {
+
+        EntityManager em = entityManagerFactory.createEntityManager();
+        em.getTransaction().begin();
+        List<Cultivo > result = em.createQuery("from Cultivo where id="+id, Cultivo.class)
+                .getResultList();
+        for (Cultivo  cultivo : result) {
+            System.out.println(cultivo.toString());
+        }
+        em.getTransaction().commit();
+        em.close();
+
+    }
 }

@@ -1,6 +1,7 @@
 package controller;
 
 import model.Caracteristicas;
+import model.Pimiento;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -53,8 +54,6 @@ public class CaracteristicasController {
         List<Caracteristicas> result = em.createQuery("from Caracteristicas", Caracteristicas.class)
                 .getResultList();
 
-
-
         for (Caracteristicas caracteristicas : result) {
             System.out.println(caracteristicas.toString());
         }
@@ -77,7 +76,12 @@ public class CaracteristicasController {
         EntityManager em = entityManagerFactory.createEntityManager();
         em.getTransaction().begin();
         Caracteristicas caracteristicas = (Caracteristicas) em.find(Caracteristicas.class, id);
-        em.remove(caracteristicas);
+        try{
+            em.remove(caracteristicas);
+
+        }catch (Exception e){
+
+        }
         em.getTransaction().commit();
         em.close();
     }
@@ -115,5 +119,17 @@ public class CaracteristicasController {
         }
 
         return listTokens;
+    }
+
+    public void printCarac(int id) {
+        EntityManager em = entityManagerFactory.createEntityManager();
+        em.getTransaction().begin();
+        List<Caracteristicas> result = em.createQuery("from Caracteristicas where id="+id, Caracteristicas.class)
+                .getResultList();
+        for (Caracteristicas caracteristicas : result) {
+            System.out.println(caracteristicas.toString());
+        }
+        em.getTransaction().commit();
+        em.close();
     }
 }

@@ -63,7 +63,7 @@ ALTER TABLE public.cultivo OWNER TO usuario;
 -- Name: pimientos; Type: TABLE; Schema: public; Owner: usuario
 --
 
-CREATE TABLE public.pimientos (
+CREATE TABLE public.pimiento (
                                   id smallint NOT NULL,
                                   nombre character varying(100),
                                   descripcion character varying (1000),
@@ -73,7 +73,7 @@ CREATE TABLE public.pimientos (
 );
 
 
-ALTER TABLE public.pimientos OWNER TO usuario;
+ALTER TABLE public.pimiento OWNER TO usuario;
 
 --
 -- Data for Name: caracteristicas; Type: TABLE DATA; Schema: public; Owner: usuario
@@ -119,8 +119,8 @@ ALTER TABLE ONLY public.cultivo
 -- Name: pimientos pimientos_pkey; Type: CONSTRAINT; Schema: public; Owner: usuario
 --
 
-ALTER TABLE ONLY public.pimientos
-    ADD CONSTRAINT pimientos_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.pimiento
+    ADD CONSTRAINT pimiento_pkey PRIMARY KEY (id);
 
 
 --
