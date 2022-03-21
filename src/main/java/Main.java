@@ -3,9 +3,9 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
-import controller.ArticleController;
-import controller.AuthorController;
-import controller.MagazineController;
+import controller.CaracteristicasController;
+import controller.CultivoController;
+import controller.PimientosController;
 import database.ConnectionFactory;
 import model.*;
 import org.hibernate.HibernateException;
@@ -24,7 +24,7 @@ import javax.persistence.Persistence;
 
 public class Main {
 
-  static SessionFactory sessionFactoryObj;
+    static SessionFactory sessionFactoryObj;
 /*
   private static SessionFactory buildSessionFactory() {
     // Creating Configuration Instance & Passing Hibernate Configuration File
@@ -39,119 +39,95 @@ public class Main {
     return sessionFactoryObj;
   } */
 
-  private static SessionFactory buildSessionFactory() {
-    try {
-      StandardServiceRegistry standardRegistry = new StandardServiceRegistryBuilder()
-          .configure("hibernate.cfg.xml").build();
-      Metadata metadata = new MetadataSources(standardRegistry).getMetadataBuilder().build();
-      return metadata.getSessionFactoryBuilder().build();
+    private static SessionFactory buildSessionFactory() {
+        try {
+            StandardServiceRegistry standardRegistry = new StandardServiceRegistryBuilder()
+                    .configure("hibernate.cfg.xml").build();
+            Metadata metadata = new MetadataSources(standardRegistry).getMetadataBuilder().build();
+            return metadata.getSessionFactoryBuilder().build();
 
-    } catch (HibernateException he) {
-      System.out.println("Session Factory creation failure");
-      throw he;
+        } catch (HibernateException he) {
+            System.out.println("Session Factory creation failure");
+            throw he;
+        }
     }
-  }
 
-  public static EntityManagerFactory createEntityManagerFactory(){
-    EntityManagerFactory emf;
-    try {
-      emf = Persistence.createEntityManagerFactory("JPAMagazines");
-    } catch (Throwable ex) {
-      System.err.println("Failed to create EntityManagerFactory object."+ ex);
-      throw new ExceptionInInitializerError(ex);
+    public static EntityManagerFactory createEntityManagerFactory() {
+        EntityManagerFactory emf;
+        try {
+            emf = Persistence.createEntityManagerFactory("biblioteca");
+        } catch (Throwable ex) {
+            System.err.println("Failed to create EntityManagerFactory object." + ex);
+            throw new ExceptionInInitializerError(ex);
+        }
+        return emf;
     }
-    return emf;
-  }
 
-  public static void main(String[] args) {
-    ArrayList<Magazine> revistes = new ArrayList();
+    public static void main(String[] args) {
+        List<Pimiento> pimientos = new ArrayList();
+        List<Caracteristicas> caracteristicas = new ArrayList();
+        List<Cultivo> cultivo = new ArrayList();
 
-    ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
-    Connection c = connectionFactory.connect();
+        ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
+        Connection c = connectionFactory.connect();
 
 //    SessionFactory sessionFactory = buildSessionFactory();
-    EntityManagerFactory entityManagerFactory = createEntityManagerFactory();
-    //sessionObj = buildSessionFactory().openSession();
+        EntityManagerFactory entityManagerFactory = createEntityManagerFactory();
+        //sessionObj = buildSessionFactory().openSession();
 
 
-    AuthorController authorController = new AuthorController(c, entityManagerFactory);
-    ArticleController articleController = new ArticleController(c, entityManagerFactory);
-    MagazineController magazineController = new MagazineController(c, entityManagerFactory);
+        PimientosController pimientosController = new PimientosController(c, entityManagerFactory);
+        CaracteristicasController caracteristicasController = new CaracteristicasController(c, entityManagerFactory);
+        CultivoController cultivoController = new CultivoController(c, entityManagerFactory);
 
-    Menu menu = new Menu();
-    int opcio;
-    opcio = menu.mainMenu();
+        Menu menu = new Menu();
+        int opcio;
+        opcio = menu.mainMenu();
 
-    switch (opcio) {
+        switch (opcio) {
 
-      case 1:
+            case 1:
+                System.out.println("1!!");
+                try {
+                    pimientos = pimientosController.readPimientosFile("src/main/resources/pimientos.txt");
+                    pimientos.forEach(pimientosController::addPimiento);
 
-        System.out.println("1!!");
-        try {
+                } catch (NumberFormatException | IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    caracteristicas = caracteristicasController.readCaracFile("src/main/resources/caracteristicas.txt");
+                    caracteristicas.forEach(caracteristicasController::addCaracteristicas);
+                } catch (NumberFormatException | IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    cultivo = cultivoController.readCultivoFile("src/main/resources/cultivo.txt");
+                    cultivo.forEach(cultivoController::addCultivo);
 
-          // authorController.printAutors(authorController.readAuthorsFile("src/main/resources/autors.txt"));
-        //
+                } catch (NumberFormatException | IOException e) {
+                    e.printStackTrace();
+                }
+                break;
 
-         // for (Author a : authors) {
-         //   authorController.addAuthor(a);
-         // }
 
-          // magazineController.printMagazines(magazineController.readMagazinesFile("src/main/resources/revistes.txt"));
-          // magazineController.printMagazines();
 
-          List<Author> authors = authorController.readAuthorsFile("src/main/resources/autors.txt");
-          List<Magazine> magazines = articleController.readArticlesFile("src/main/resources/articles.txt", "src/main/resources/revistes.txt", "src/main/resources/autors.txt");
-          List<Article> articles = articleController.readArticlesFile("src/main/resources/articles.txt", "src/main/resources/autors.txt");
 
-          System.out.println("Revistes llegides des del fitxer");
-          for (int i = 0; i < magazines.size(); i++) {
-            System.out.println(magazines.get(i).toString()+"\n");
-            for (int j = 0; j < magazines.get(i).getArticles().size(); j++) {
-              Author author = magazines.get(i).getArticles().get(j).getAuthor();
-              authorController.addAuthor(author);
+            case 2:
+                System.out.println("2!!");
 
-              System.out.println("EL AUTOR:");
-              System.out.println(author);
+                pimientosController.listPimientos();
+                caracteristicasController.listCaracterisicas();
+                cultivoController.listCultivo();
 
-              Article article = magazines.get(i).getArticles().get(j);
-              article.setAuthor(author);
+                break;
+            default:
+                System.out.println("Adeu!!");
+                System.exit(1);
+                break;
 
-              System.out.println("EL ARTICLE:");
-              System.out.println(article);
-
-              articleController.addArticle(article);
-            }
-
-            magazineController.addMagazine(magazines.get(i));
-          }
-
-/*
-          for (Magazine m : magazines) {
-            System.out.println(m);
-            magazineController.addMagazine(m);
-          }
-
-          for (Author a : authors) {
-            authorController.addAuthor(a);
-          }
-
-          for (Article ar : articles) {
-            articleController.addArticle(ar);
-          }
-*/
-        } catch (NumberFormatException | IOException e) {
-
-          e.printStackTrace();
         }
-        break;
-
-      default:
-        System.out.println("Adeu!!");
-        System.exit(1);
-        break;
-
     }
-  }
 }
 
 

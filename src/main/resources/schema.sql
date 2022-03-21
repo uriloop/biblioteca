@@ -1,40 +1,129 @@
-CREATE TABLE autors
-(
-  id_autor integer NOT NULL,
-  nom character varying(30) NOT NULL,
-  any_naixement character(4),
-  nacionalitat character varying(12),
-  actiu boolean NOT NULL,
-  CONSTRAINT pk_autors PRIMARY KEY (id_autor)
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.9 (Ubuntu 12.9-0ubuntu0.20.04.1)
+-- Dumped by pg_dump version 12.9 (Ubuntu 12.9-0ubuntu0.20.04.1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: caracteristicas; Type: TABLE; Schema: public; Owner: usuario
+--
+
+CREATE TABLE public.caracteristicas (
+                                        id smallint NOT NULL,
+                                        altura_max smallint,
+                                        altura_min smallint,
+                                        ancho_max smallint,
+                                        ancho_min smallint,
+                                        scoville_max integer,
+                                        scoville_min integer,
+                                        dies_cult_max smallint,
+                                        dies_cult_min smallint,
+                                        rendimiento character varying(80)
 );
 
 
+ALTER TABLE public.caracteristicas OWNER TO usuario;
 
-CREATE TABLE revistes
-(
-  id_revista serial NOT NULL,
-  titol character varying(30) NOT NULL,
-  data_publicacio date NOT NULL ,
-  CONSTRAINT pk_revistes PRIMARY KEY (id_revista),
-  CONSTRAINT uk_titol UNIQUE (titol)
+--
+-- Name: cultivo; Type: TABLE; Schema: public; Owner: usuario
+--
+
+CREATE TABLE public.cultivo (
+                                id smallint NOT NULL,
+                                prof_semilla numeric,
+                                dist_semillas numeric,
+                                dist_plantas smallint,
+                                temp_cre_max smallint,
+                                temp_cre_min smallint,
+                                temp_germ_max smallint,
+                                temp_germ_min smallint,
+                                luz character varying(90)
 );
 
 
-CREATE TABLE articles
-(
-  id_article serial NOT NULL,
-  id_revista integer,
-  id_autor integer NOT NULL,
-  titol character varying(30) NOT NULL,
-  data_creacio date ,
-  publicable boolean NOT NULL,
-  CONSTRAINT pk_articles PRIMARY KEY (id_article),
-  CONSTRAINT fk_art_revistes FOREIGN KEY (id_revista)
-      REFERENCES revistes (id_revista) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT fk_articles_autors FOREIGN KEY (id_autor)
-      REFERENCES autors (id_autor) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT uk_articles UNIQUE (titol)  
+ALTER TABLE public.cultivo OWNER TO usuario;
+
+--
+-- Name: pimientos; Type: TABLE; Schema: public; Owner: usuario
+--
+
+CREATE TABLE public.pimientos (
+                                  id smallint NOT NULL,
+                                  nombre character varying(100),
+                                  descripcion character varying (1000),
+                                  familia character varying(110),
+                                  origen character varying(120),
+                                  img character varying(200)
 );
+
+
+ALTER TABLE public.pimientos OWNER TO usuario;
+
+--
+-- Data for Name: caracteristicas; Type: TABLE DATA; Schema: public; Owner: usuario
+--
+
+COPY public.caracteristicas (id, altura_max, altura_min, ancho_max, ancho_min, scoville_max, scoville_min, dies_cult_max, dies_cult_min, color, rendimiento) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cultivo; Type: TABLE DATA; Schema: public; Owner: usuario
+--
+
+COPY public.cultivo (id, prof_semilla, dist_semillas, dist_plantas, temp_cre_max, temp_cre_min, temp_germ_max, temp_germ_min, luz) FROM stdin;
+\.
+
+
+--
+-- Data for Name: pimientos; Type: TABLE DATA; Schema: public; Owner: usuario
+--
+
+COPY public.pimientos (id, nombre, descripcion, familia, origen, img) FROM stdin;
+\.
+
+
+--
+-- Name: caracteristicas caracteristicas_pkey; Type: CONSTRAINT; Schema: public; Owner: usuario
+--
+
+ALTER TABLE ONLY public.caracteristicas
+    ADD CONSTRAINT caracteristicas_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cultivo cultivo_pkey; Type: CONSTRAINT; Schema: public; Owner: usuario
+--
+
+ALTER TABLE ONLY public.cultivo
+    ADD CONSTRAINT cultivo_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: pimientos pimientos_pkey; Type: CONSTRAINT; Schema: public; Owner: usuario
+--
+
+ALTER TABLE ONLY public.pimientos
+    ADD CONSTRAINT pimientos_pkey PRIMARY KEY (id);
+
+
+--
+-- PostgreSQL database dump complete
+--
 
